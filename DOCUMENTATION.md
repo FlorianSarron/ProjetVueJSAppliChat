@@ -6,6 +6,8 @@
 
 ## Message
 
+test !!
+
 # Methods
 
 ## Promise<{users : Array<User>}> : getUsers() {
