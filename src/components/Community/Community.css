@@ -1,0 +1,68 @@
+.community {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter {
+    padding: 20px;
+}
+
+.available {
+    color: #42b72a;
+}
+
+.users {
+    padding: 0 20px 20px;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+}
+
+.user {
+    width: 150px;
+    height: 200px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.5s;
+    padding-top: 20px;
+    border-radius: 10px;
+}
+
+.user img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    transition: border 0.5s;
+}
+
+.user.selected img {
+    border: 8px solid #0099ff;
+}
+
+.user:hover {
+    background: #efefef;
+}
+
+.user span {
+    font-weight: bold;
+    display: block;
+    font-size: 20px;
+}
+
+.actions {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+button {
+    background: #0099ff !important;
+}

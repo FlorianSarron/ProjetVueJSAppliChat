@@ -1,0 +1,50 @@
+.group {
+    padding: 10px;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    height: 0;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+}
+
+img {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.user span {
+    padding: 0 5px;
+    flex: 1;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.user i {
+    font-weight: normal;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+hr {
+    border: 0.5px solid #dedede;
+    flex: 1;
+}
+
+.spanner span {
+    padding: 0 10px;
+    font-weight: bold;
+    color: #999;
+}
+
+.spanner {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}

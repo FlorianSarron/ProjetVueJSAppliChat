@@ -1,0 +1,214 @@
+.sidebar {
+    position: absolute;
+    width: 300px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background: white;
+    border-right: 1px solid #dedede;
+    display: flex;
+    flex-direction: column;
+}
+
+@media screen and (max-width: 800px) {
+    .sidebar {
+        width: 60px;
+    }
+}
+
+.user-picture img {
+    height: 75px;
+}
+
+.user-info-status .busy {
+    color: black !important;
+    font-weight: bold !important;
+}
+
+.user-info-status .available {
+    color: #42b72a !important;
+    font-weight: bold !important;
+}
+
+.user {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid #dedede;
+}
+
+@media screen and (max-width: 800px) {
+    .user {
+        display: none;
+    }
+}
+
+.user-info {
+    padding: 10px;
+    flex: 1;
+}
+
+.user-info-pseudo {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.menu {
+    padding: 5px;
+    border-bottom: 1px solid #dedede;
+    display: flex;
+}
+
+@media screen and (max-width: 800px) {
+    .menu {
+        flex-direction: column;
+    }
+
+    .menu span {
+        display: none;
+    }
+}
+
+.menu .button {
+    flex: 1;
+    margin: 5px;
+    padding: 5px 0;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    background: #0099ff !important;
+    cursor: pointer;
+    transition: opacity 0.5s;
+}
+
+.menu .button:hover {
+    opacity: 0.8;
+}
+
+.menu i {
+    margin: 0;
+}
+
+.conversation-search {
+    padding: 5px;
+}
+
+@media screen and (max-width: 800px) {
+    .conversation-search {
+        display: none;
+    }
+}
+
+.conversations {
+    width: 100%;
+    padding: 5px;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    height: 0;
+}
+
+.conversation {
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.conversations img {
+    border-radius: 500rem !important;
+    border: 1.5px solid transparent;
+    height: 40px;
+    width: 40px;
+}
+
+.conversation.selected {
+    background: #efefef;
+    border-radius: 5px;
+}
+
+.available .icon {
+    color: #42b72a;
+}
+
+.new .icon {
+    color: dodgerblue;
+}
+
+.title {
+    color: black;
+    font-weight: bold;
+}
+
+.conversation.new .text {
+    font-weight: bold;
+    color: black !important;
+}
+
+@media screen and (max-width: 800px) {
+    .conversation .content {
+        display: none;
+    }
+}
+
+.conversation {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.conversation .avatar span {
+    display: block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-weight: bold;
+    background: #222;
+    color: white;
+    border-radius: 20px;
+    font-size: 18px;
+}
+
+.conversation .avatar i {
+    margin: 0;
+}
+
+.conversation .title {
+    font-size: 16px;
+    text-overflow: ellipsis;
+    width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.conversation .metadata {
+    padding-left: 10px;
+    display: flex;
+}
+
+.conversation .time {
+    padding-left: 5px;
+    color: #aaa;
+    font-size: 80%;
+    flex: 1;
+    text-align: right;
+}
+
+.conversation .text {
+    padding-left: 10px;
+    color: #777;
+    text-overflow: ellipsis;
+    width: 230px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: justify;
+}
+
+@media screen and (max-width: 800px) {
+    .conversations {
+        top: 0;
+    }
+}
+
+.blue.buttons button {
+    background: #0099ff !important;
+}

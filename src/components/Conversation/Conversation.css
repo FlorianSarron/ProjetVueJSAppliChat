@@ -1,0 +1,268 @@
+.conversation-header {
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+    border-bottom: 1px solid #dedede;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.conversation-header .avatar {
+    width: 75px;
+    height: 75px;
+    line-height: 75px;
+    text-align: center;
+    font-size: 35px;
+    font-weight: bold;
+    border-radius: 50px;
+    background: black;
+    color: white;
+    margin: 0 5px;
+}
+
+.avatar i {
+    margin: 0;
+}
+
+.conversation-header .title span {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.conversation-header .title .circle {
+    color: #42b72a;
+    vertical-align: text-top;
+}
+
+.conversation-header .title .vertical.ellipsis.icon {
+    margin: 0 5px;
+    vertical-align: text-top;
+}
+
+.conversation-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.conversation-container {
+    display: flex;
+    width: 100%;
+    flex: 1;
+}
+
+.conversation-sidebar {
+    width: 300px;
+    border-left: 1px solid #dedede;
+    display: flex;
+    flex-direction: column;
+}
+
+.conversation-body {
+    background: white;
+    flex: 1 1 auto;
+    height: 0;
+    overflow-y: auto;
+}
+
+.conversation-body .wrapper {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px 30px;
+}
+
+.typing {
+    font-weight: bold;
+    font-style: italic;
+    color: #999999;
+    text-align: center;
+}
+
+.typing .wrapper {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px 30px;
+}
+
+.conversation-footer {
+    border-top: 1px solid #dedede;
+}
+
+.transiting {
+    opacity: 0.5;
+}
+
+.conversation-footer .wrapper {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px 30px;
+}
+
+.conversation-footer p {
+    padding: 0 15px 5px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.conversation-footer span {
+    font-weight: normal;
+    font-style: italic;
+}
+
+.conversation {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.time {
+    text-align: center;
+}
+
+.message {
+    color: black;
+    padding: 2.5px 0;
+    display: flex;
+}
+
+.mine {
+}
+
+.message img {
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    margin-right: 10px;
+    align-self: end;
+}
+
+.bubble {
+    margin-left: 42px;
+}
+
+img + .bubble {
+    margin-left: 0;
+}
+
+.bubble {
+    background: #f1f0f0;
+    padding: 6px 16px;
+    border-radius: 16px;
+}
+
+.bubble.top.bottom {
+    border-radius: 16px !important;
+}
+
+.mine {
+    justify-content: end;
+    flex-direction: row-reverse;
+}
+
+.mine .bubble {
+    background: #0099ff;
+    color: white;
+}
+
+.message.mine .top.bubble {
+    border-bottom-right-radius: 0;
+}
+
+.message.mine .middle.bubble {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.message.mine .bottom.bubble {
+    border-top-right-radius: 0;
+}
+
+.message:not(.mine) .top.bubble {
+    border-bottom-left-radius: 0;
+}
+
+.message:not(.mine) .middle.bubble {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.message:not(.mine) .bottom.bubble {
+    border-top-left-radius: 0;
+}
+
+.view {
+    text-align: center;
+}
+
+.view img {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    margin: 0 4px;
+}
+
+.message .controls {
+    align-items: center;
+    min-width: 190px;
+    display: none;
+}
+
+.message .reacts {
+    align-items: center;
+    min-width: 190px;
+    display: flex;
+}
+
+.mine .reacts {
+    justify-content: flex-end;
+}
+
+.message:hover .controls {
+    display: flex;
+}
+
+.message:hover .reacts {
+    display: none;
+}
+
+.message i {
+    margin: 0 0 0 10px;
+    cursor: pointer;
+}
+
+.message.mine .bubble {
+    margin-left: 0;
+}
+
+.message.mine i {
+    margin: 0 10px 0 0;
+}
+
+.mine .controls {
+    justify-content: flex-end;
+}
+
+.react * {
+    transition: opacity 0.3s;
+    opacity: 0 !important;
+}
+
+.react .heart {
+    opacity: 1 !important;
+}
+
+.message:hover * {
+    opacity: 1 !important;
+}
+
+.reply_content {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 3px 5px;
+    border-radius: 6px;
+    font-size: 80%;
+}
