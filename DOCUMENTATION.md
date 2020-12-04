@@ -1,4 +1,3 @@
-
 # Models
 
 ## User
@@ -6,8 +5,6 @@
 ## Conversation
 
 ## Message
-
-Julien est une pauvre merde
 
 # Methods
 
@@ -83,38 +80,26 @@ Julien est une pauvre merde
     - NOT_FOUND_CONVERSATION
     - NOT_VALID_USER
 
-
-
 # Events
 
 ## client.on("userCreated", ({ user: User }) => {})
 
-
 ## client.on("conversationCreated", ({ conversation: Conversation }) => {})
-
 
 ## client.on("participantAdded", ({ conversation: Conversation }) => {})
 
-
 ## client.on("participantRemoved", ({ conversation: Conversation }) => {})
-
 
 ## client.on("messagePosted", ({ conversation_id: Number, message: Message }) => {})
 
-
 ## client.on("messageDelivered", ({ conversation_id: Number, message: Message }) => {})
-
 
 ## client.on("conversationSeen", ({ conversation: Conversation }) => {})
 
-
 ## client.on("messageReacted", ({ conversation_id: Number, message: Message }) => {})
-
 
 ## client.on("messageEdited", ({ conversation_id: Number, message: Message }) => {})
 
-
 ## client.on("messageDeleted", ({ conversation_id: Number, message_id: Number }) => {})
-
 
 ## client.on("usersAvailable", ({ usernames: Array<String> }) => {})
