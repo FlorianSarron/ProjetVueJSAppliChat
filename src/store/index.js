@@ -17,7 +17,8 @@ export default new Vuex.Store({
     conversations: [],
     currentConversationId: null,
     usersAvailable: [],
-    searchUser: ""
+    searchUser: "",
+    groupUsersFilter: ""
   },
   getters: {
     authenticating(state) {
@@ -38,59 +39,136 @@ export default new Vuex.Store({
       }));
     },
     conversations(state) {
-      /* [ { "id": 31,
-       "type": "one_to_one",
-        "participants": [ "Florian", "Alice" ],
-         "messages": [],
-          "title": null,
-           "theme": "BLUE", 
-           "nicknames": {}, 
-           "updated_at": "2020-12-07T08:07:57.519Z",
-            "seen": { "Florian": -1, "Alice": -1 },
-             "typing": {} } ]
+      return state.conversations
+        .map((conversation) => {
+          return {
+            id: conversation.id,
+            type: conversation.type,
+            participants: conversation.participants,
+            messages: conversation.messages,
+            title:
+              conversation.type === "one_to_one"
+                ? conversation.participants.find(
+                    (el) => el !== state.user.username
+                  )
+                : "Groupe: " + conversation.participants.join(","),
+            theme: conversation.theme,
+            nicknames: conversation.nicknames,
+            updated_at: conversation.updated_at,
+            seen: conversation.seen,
+            typing: conversation.typing,
+            avatarClass:
+              conversation.type === "one_to_one"
+                ? state.users.find(
+                    (user) =>
+                      user.username ===
+                      conversation.participants.find(
+                        (el) => el !== state.user.username
+                      )
+                  ).picture_url
+                : "users icon",
+            subTitle:
+              conversation.messages.length > 0
+                ? conversation.messages[conversation.messages.length - 1]
+                : "Nouvelle Conversation",
+            isManyToMany: conversation.type === "one_to_one" ? false : true
+          };
+        })
+        .sort(function (a, b) {
+          return new Date(b.updated_at - new Date(a.updated_at));
+        });
+    },
 
-         
-             
-             
-             */
-      return state.conversations.map((conversation) => {
+    conversation(state) {
+      let allConvs = state.conversations.map((conversation) => {
         return {
           id: conversation.id,
           type: conversation.type,
           participants: conversation.participants,
           messages: conversation.messages,
-          title: function getTitre(state, type, participants) {
-            let titre = "titre";
-            if (type === "one_to_one") {
-              titre = participants.find((el) => el !== state.user.username);
-            } else {
-              titre = "Groupe: ";
-              titre += participants.join(",");
-            }
-            return titre;
-          },
+          title:
+            conversation.type === "one_to_one"
+              ? conversation.participants.find(
+                  (el) => el !== state.user.username
+                )
+              : "Groupe: " + conversation.participants.join(","),
           theme: conversation.theme,
           nicknames: conversation.nicknames,
           updated_at: conversation.updated_at,
           seen: conversation.seen,
-          typing: conversation.typing
+          typing: conversation.typing,
+          avatarClass:
+            conversation.type === "one_to_one"
+              ? state.users.find(
+                  (user) =>
+                    user.username ===
+                    conversation.participants.find(
+                      (el) => el !== state.user.username
+                    )
+                ).picture_url
+              : "users icon",
+          subTitle:
+            conversation.messages.length > 0
+              ? conversation.messages[conversation.messages.length - 1]
+              : "Nouvelle Conversation",
+          isManyToMany: conversation.type === "one_to_one" ? false : true
         };
       });
-    },
-
-    conversation(state, getters) {
-      //TODO
+      return allConvs.find((conv) => conv.id === state.currentConversationId);
     },
 
     filteredUsers(state) {
-      let allUsers = state.users.map((user) => ({
-        username: user.username,
-        picture_url: user.picture_url,
-        awake: user.awake,
-        isSelected: false
-      }));
-      return allUsers.filter((user) =>
+      return state.users.filter((user) =>
         user.username.toLowerCase().includes(state.searchUser.toLowerCase())
+      );
+    },
+    filteredUsersInConversation(state) {
+      let conv = state.conversations.find(
+        (conv) => conv.id === state.currentConversationId
+      );
+      let userTab = [];
+      state.users.forEach(function (user) {
+        conv.participants.forEach(function (username) {
+          if (user.username === username) {
+            userTab.push(user);
+          }
+        });
+      });
+      return userTab.filter((user) =>
+        user.username
+          .toLowerCase()
+          .includes(state.groupUsersFilter.toLowerCase())
+      );
+    },
+    filteredUsersNotInConversation(state) {
+      let conv = state.conversations.find(
+        (conv) => conv.id === state.currentConversationId
+      );
+      let userTabIn = [];
+      state.users.forEach(function (user) {
+        conv.participants.forEach(function (username) {
+          if (user.username === username) {
+            userTabIn.push(user);
+          }
+        });
+      });
+      let userTabOut = [];
+      state.users.forEach(function (user) {
+        conv.participants.forEach(function (username) {
+          if (user.username !== username) {
+            if (!userTabOut.find((el) => el === user)) {
+              if (!userTabIn.find((el) => el === user)) {
+                userTabOut.push(user);
+              }
+            }
+          }
+        });
+      });
+
+      return userTabOut.filter((user) =>
+        user.username
+          .toLowerCase()
+          .includes(state.groupUsersFilter.toLowerCase())
       );
     }
   },
@@ -108,6 +186,10 @@ export default new Vuex.Store({
     },
     setUsers(state, users) {
       state.users = users;
+    },
+
+    setConversations(state, conversations) {
+      state.conversations = conversations;
     },
 
     upsertUser(state, { user }) {
@@ -139,8 +221,16 @@ export default new Vuex.Store({
       }
     },
 
+    upsertMessage(state, { conversation_id }, { message }) {
+      console.log("upsertConversation");
+    },
+
     setSearchUser(state, input) {
       state.searchUser = input;
+    },
+
+    setGroupUsersFilter(state, input) {
+      state.groupUsersFilter = input;
     }
   },
   actions: {
@@ -171,9 +261,11 @@ export default new Vuex.Store({
       window.location.reload();
     },
 
-    initializeAfterAuthentication({ dispatch }) {
+    initializeAfterAuthentication({ dispatch, commit }) {
       dispatch("fetchUsers");
-      //TODO: dispatch("fetchConversations");
+      Vue.prototype.$client.getConversations().then(({ conversations }) => {
+        commit("setConversations", conversations);
+      });
     },
 
     fetchUsers({ commit }) {
@@ -216,6 +308,20 @@ export default new Vuex.Store({
       });
 
       return promiseMany;
+    },
+
+    postMessage({ commit }, conversation_id, input) {
+      const promiseMessage = Vue.prototype.$client.postMessage(
+        conversation_id,
+        input
+      );
+
+      promiseMessage.then(({ conversation_id }, { message }) => {
+        commit("upsertMessage", { conversation_id }, { message });
+        console.log("mutation message envoyé");
+      });
+
+      return promiseMessage;
     }
   }
 });

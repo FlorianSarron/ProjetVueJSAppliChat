@@ -28,7 +28,7 @@
       <button class="ui primary big button" @click="openConversation">
         <i class="conversation icon"></i>
         <span>
-          Ouvrir la conversation (2)
+          Ouvrir la conversation ({{ selectedUsers.length }})
         </span>
       </button>
     </div>

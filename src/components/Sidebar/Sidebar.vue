@@ -48,96 +48,33 @@
           </div>
         </div>
       </div>
-      <!-- <div class="conversation new" title="Bob" @click="openConversation(0)">
-        <a class="avatar">
-          <img src="https://source.unsplash.com/7omHUGhhmZ0/100x100" />
-        </a>
-        <div class="content">
-          <div class="metadata">
-            <div class="title"><i class="ui small icon circle"> </i> Bob</div>
-            <span class="time">01:30:58</span>
-          </div>
-          <div class="text">C'est vraiment super Alice !</div>
-        </div>
-      </div> 
-      
-      <div class="user" v-bind:class="{ selected: isSelected(user)}"  v-for="user in filteredUsers" :key="user.username" @click="toggleSelected(user)">
-        <img :src="user.picture_url" /><span
-          class="">
-          {{user.username}}</span
-        >
-      </div>
+    
       <div
         class="conversation"
         v-for="conversation in conversations"
-        title="Groupe: Gael, Bob"
-        @click="openConversation(0)"
+        :key="conversation.id"
+        :title="conversation.title"
+        @click="openConversation(conversation.id)"
       >
-        <a class="avatar">
+        <a class="avatar" v-if="conversation.isManyToMany">
           <span>
-            <i class="users icon"> </i>
+            <i :class="conversation.avatarClass"> </i>
           </span>
         </a>
-        <div class="content">
-          <div class="metadata">
-            <div class="title">Groupe: Gael, Bob</div>
-            <span class="time">01:36:38</span>
-          </div>
-          <div class="text">Incroyable !</div>
-        </div>
-      </div>
-      -->
-      <div> {{ conversations }}</div>
-      <div
-        class="conversation"
-        title="Groupe: Gael, Bob"
-        @click="openConversation(0)"
-      >
-        <a class="avatar">
-          <span>
-            <i class="users icon"> </i>
-          </span>
+        <a class="avatar" v-if="!conversation.isManyToMany">
+          <img :src="conversation.avatarClass" />
         </a>
         <div class="content">
           <div class="metadata">
-            <div class="title">Groupe: Gael, Bob</div>
-            <span class="time">01:36:38</span>
+            <div class="title">{{conversation.title}}</div>
+            <span class="time">{{new Date(conversation.updated_at).toLocaleString("fr-FR",{
+              hour:'2-digit',
+              minute:'2-digit'})}}</span>
           </div>
-          <div class="text">Incroyable !</div>
+          <div class="text">{{conversation.subTitle}}</div>
         </div>
-      </div>
-      <div
-        class="conversation available"
-        title="Cha"
-        @click="openConversation(0)"
-      >
-        <a class="avatar">
-          <img src="https://source.unsplash.com/8wbxjJBrl3k/100x100" />
-        </a>
-        <div class="content">
-          <div class="metadata">
-            <div class="title"><i class="ui small icon circle"> </i> Cha</div>
-            <span class="time">01:47:50</span>
-          </div>
-          <div class="text">Nouvelle conversation</div>
-        </div>
-      </div>
-      <div
-        class="conversation selected"
-        title="Derek"
-        @click="openConversation(0)"
-      >
-        <a class="avatar">
-          <img src="https://source.unsplash.com/FUcupae92P4/100x100" />
-        </a>
-        <div class="content">
-          <div class="metadata">
-            <div class="title">Derek</div>
-            <span class="time">01:48:00</span>
-          </div>
-          <div class="text">Nouvelle conversation</div>
-        </div>
-      </div>
+      </div> 
+    
     </div>
   </div>
 </template>
@@ -166,7 +103,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["user", "conversations"])
+    ...mapGetters(["user", "conversations", "conversation"])
     
   }
 };

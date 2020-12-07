@@ -14,36 +14,36 @@
 
   > \$client, actions
 
-- Mettre à jour en temps réel la liste des utilisateurs quand un utilisateur s'inscrit
+- Mettre à jour en temps réel la liste des utilisateurs quand un utilisateur s'inscrit FAIT
 
   > \$client.on('userCreated')
 
-- Recevoir en temps réel l'ajout d'une conversation
+- Recevoir en temps réel l'ajout d'une conversation FAIT
 
   > \$client.on('conversationCreated') !!! Charly
 
-- Afficher la liste des participants à une conversation (Conversation)
+- Afficher la liste des participants à une conversation (Conversation) FAIT
 
 ## Niveau 1
 
-- Afficher la liste des utilisateurs (Community)
+- Afficher la liste des utilisateurs (Community) FAIT
 
   - Afficher leur photo
     > :src
   - Afficher leur nom
 
-- Permettre de filtrer la liste des utilisateurs (Community)
+- Permettre de filtrer la liste des utilisateurs (Community) FAIT
 
   > data, v-model, computed
 
-  - Permettre un filtrage insensible à la casse
+  - Permettre un filtrage insensible à la casse FAIT
     > String.toLowerCase()
 
-- Permettre de toggle sélectionner des utilisateurs (Community)
+- Permettre de toggle sélectionner des utilisateurs (Community) FAIT
 
   > data, :class, classe "selected", @click
 
-- Ouvrir une conversation avec les utilisateurs sélectionner (Community)
+- Ouvrir une conversation avec les utilisateurs sélectionner (Community) FAIT
 
   - Ouvrir une conversation OneToOne quand un seul utilisateur est sélectionné sinon ManyToMany
     > @click, $client.getOrCreateOneToOneConversation, $client.createManyToManyConversation
@@ -56,7 +56,7 @@
 
 ## Niveau 2
 
-- Afficher la liste des conversations (Sidebar)
+- Afficher la liste des conversations (Sidebar) FAIT A MOITIE
 
   - Afficher photo+nom de l'utilisateur/groupe, et texte+heure du dernier message
   - Trier la liste par heure de mise à jour décroissante
