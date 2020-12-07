@@ -4,6 +4,8 @@
       <div class="ui fluid search">
         <div class="ui icon input">
           <input
+            @input="setSearchUser($event.target.value)"
+            :value="searchUser"
             class="prompt"
             type="text"
             placeholder="Rechercher un utilisateur"
@@ -14,7 +16,7 @@
       </div>
     </div>
     <div class="users">
-      <div :class="user.userType" v-for="user in users" :key="user.username" @click="setSelected(user)">
+      <div class="user" v-bind:class="{ selected: isSelected(user)}"  v-for="user in filteredUsers" :key="user.username" @click="toggleSelected(user)">
         <img :src="user.picture_url" /><span
           class="">
           {{user.username}}</span
@@ -34,26 +36,62 @@
 </template>
 
 <script>
-import { mapGetters, mapActions ,mapMutations} from "vuex";
+import { mapGetters, mapActions ,mapMutations,mapState} from "vuex";
 
 export default {
   name: "Community",
   data() {
-    return {};
+    return {
+      selectedUsers: []
+    };
   },
   methods: {
-    ...mapMutations(["setSelected"]),
-    ...mapActions(["createOneToOneConversation"]),
+    ...mapMutations(["setSearchUser"]),
+    ...mapActions(["createOneToOneConversation","createManyToManyConversation"]),
     openConversation() {
-      let promise = this.createOneToOneConversation("Alice");
 
-      promise.finally(() => {
+      if (this.selectedUsers.length === 1) {
+        let promise = this.createOneToOneConversation(this.selectedUsers[0]);
+
+        promise.finally(() => {
         console.log("Conversation ouverte !");
-      });
+        });
+      }
+
+      if (this.selectedUsers.length > 1) {
+        let usersArray = [];
+        this.selectedUsers.forEach(selectedUser => {
+          usersArray.push(selectedUser);
+          console.log(selectedUser);
+        });
+        let promiseMany = this.createManyToManyConversation(usersArray);
+
+        promiseMany.finally(() => {
+        console.log("Conversation de groupe ouverte !");
+        });
+      }
+    },
+    toggleSelected(user){
+      if(this.isSelected(user)){
+        this.selectedUsers=this.selectedUsers.filter((el) =>el!==user.username);
+      }
+      else{
+        this.selectedUsers.push(user.username);
+      }
+    },
+    isSelected(user){
+      if(this.selectedUsers.find((el) =>el===user.username)){
+        return true;
+      }
+      else{
+        return false;
+      }
+      
     }
   },
   computed: {
-    ...mapGetters(["users"])
+    ...mapState(["searchUser"]),
+    ...mapGetters(["users","filteredUsers","selectedUsersForOpenConversation"]),
   }
 };
 </script>

@@ -13,10 +13,11 @@ export default new Vuex.Store({
       picture_url: null
     },
     users: [],
+    filteredUsers: [],
     conversations: [],
     currentConversationId: null,
-    selectedUsersForOpenConversation: [],
-    usersAvailable: []
+    usersAvailable: [],
+    searchUser: ""
   },
   getters: {
     authenticating(state) {
@@ -33,24 +34,64 @@ export default new Vuex.Store({
         username: user.username,
         picture_url: user.picture_url,
         awake: user.awake,
-        userType: "user"
+        isSelected: false
       }));
     },
     conversations(state) {
+      /* [ { "id": 31,
+       "type": "one_to_one",
+        "participants": [ "Florian", "Alice" ],
+         "messages": [],
+          "title": null,
+           "theme": "BLUE", 
+           "nicknames": {}, 
+           "updated_at": "2020-12-07T08:07:57.519Z",
+            "seen": { "Florian": -1, "Alice": -1 },
+             "typing": {} } ]
+
+         
+             
+             
+             */
       return state.conversations.map((conversation) => {
         return {
-          ...conversation
-          //TODO
+          id: conversation.id,
+          type: conversation.type,
+          participants: conversation.participants,
+          messages: conversation.messages,
+          title: function getTitre(state, type, participants) {
+            let titre = "titre";
+            if (type === "one_to_one") {
+              titre = participants.find((el) => el !== state.user.username);
+            } else {
+              titre = "Groupe: ";
+              titre += participants.join(",");
+            }
+            return titre;
+          },
+          theme: conversation.theme,
+          nicknames: conversation.nicknames,
+          updated_at: conversation.updated_at,
+          seen: conversation.seen,
+          typing: conversation.typing
         };
       });
     },
+
     conversation(state, getters) {
       //TODO
     },
-    selectedUsersForOpenConversation(state) {
-      return state.selectedUsersForOpenConversation.map((user) => ({
-        username: user.username
+
+    filteredUsers(state) {
+      let allUsers = state.users.map((user) => ({
+        username: user.username,
+        picture_url: user.picture_url,
+        awake: user.awake,
+        isSelected: false
       }));
+      return allUsers.filter((user) =>
+        user.username.toLowerCase().includes(state.searchUser.toLowerCase())
+      );
     }
   },
   mutations: {
@@ -84,17 +125,22 @@ export default new Vuex.Store({
     },
 
     upsertConversation(state, { conversation }) {
-      //TODO
+      console.log("upsertConversation");
+      const localConvIndex = state.conversations.findIndex(
+        (_conv) => _conv.id === conversation.id
+      );
+
+      if (localConvIndex !== -1) {
+        Vue.set(state.conversations, localConvIndex, conversation);
+      } else {
+        state.conversations.push({
+          ...conversation
+        });
+      }
     },
 
-    setSelected(state, user) {
-      console.log("on selectionne un user");
-      console.log(user);
-      if (user.userType === "user") {
-        user.userType = "selected user";
-      } else {
-        user.userType = "user";
-      }
+    setSearchUser(state, input) {
+      state.searchUser = input;
     }
   },
   actions: {
@@ -142,9 +188,8 @@ export default new Vuex.Store({
       );
 
       promise.then(({ conversation }) => {
-        // commit("upsertConversation", {
-        //   conversation
-        // });
+        commit("upsertConversation", { conversation });
+        console.log("mutation conversation");
 
         router.push({
           name: "Conversation",
@@ -153,6 +198,24 @@ export default new Vuex.Store({
       });
 
       return promise;
+    },
+
+    createManyToManyConversation({ commit }, usernames) {
+      const promiseMany = Vue.prototype.$client.createManyToManyConversation(
+        usernames
+      );
+
+      promiseMany.then(({ conversation }) => {
+        commit("upsertConversation", { conversation });
+        console.log("mutation conversation groupe");
+
+        router.push({
+          name: "Conversation",
+          params: { id: conversation.id }
+        });
+      });
+
+      return promiseMany;
     }
   }
 });

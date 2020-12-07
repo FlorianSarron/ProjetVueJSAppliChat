@@ -48,7 +48,7 @@
           </div>
         </div>
       </div>
-      <div class="conversation new" title="Bob" @click="openConversation(0)">
+      <!-- <div class="conversation new" title="Bob" @click="openConversation(0)">
         <a class="avatar">
           <img src="https://source.unsplash.com/7omHUGhhmZ0/100x100" />
         </a>
@@ -59,7 +59,35 @@
           </div>
           <div class="text">C'est vraiment super Alice !</div>
         </div>
+      </div> 
+      
+      <div class="user" v-bind:class="{ selected: isSelected(user)}"  v-for="user in filteredUsers" :key="user.username" @click="toggleSelected(user)">
+        <img :src="user.picture_url" /><span
+          class="">
+          {{user.username}}</span
+        >
       </div>
+      <div
+        class="conversation"
+        v-for="conversation in conversations"
+        title="Groupe: Gael, Bob"
+        @click="openConversation(0)"
+      >
+        <a class="avatar">
+          <span>
+            <i class="users icon"> </i>
+          </span>
+        </a>
+        <div class="content">
+          <div class="metadata">
+            <div class="title">Groupe: Gael, Bob</div>
+            <span class="time">01:36:38</span>
+          </div>
+          <div class="text">Incroyable !</div>
+        </div>
+      </div>
+      -->
+      <div> {{ conversations }}</div>
       <div
         class="conversation"
         title="Groupe: Gael, Bob"
@@ -139,6 +167,7 @@ export default {
   },
   computed: {
     ...mapGetters(["user", "conversations"])
+    
   }
 };
 </script>
