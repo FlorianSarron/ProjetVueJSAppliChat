@@ -15,6 +15,7 @@ export default new Vuex.Store({
     users: [],
     conversations: [],
     currentConversationId: null,
+    selectedUsersForOpenConversation: [],
     usersAvailable: []
   },
   getters: {
@@ -28,13 +29,15 @@ export default new Vuex.Store({
       return state.user;
     },
     users(state) {
-      return state.users.map(user => ({
-        ...user
-        //TODO
+      return state.users.map((user) => ({
+        username: user.username,
+        picture_url: user.picture_url,
+        awake: user.awake,
+        userType: "user"
       }));
     },
     conversations(state) {
-      return state.conversations.map(conversation => {
+      return state.conversations.map((conversation) => {
         return {
           ...conversation
           //TODO
@@ -43,6 +46,11 @@ export default new Vuex.Store({
     },
     conversation(state, getters) {
       //TODO
+    },
+    selectedUsersForOpenConversation(state) {
+      return state.selectedUsersForOpenConversation.map((user) => ({
+        username: user.username
+      }));
     }
   },
   mutations: {
@@ -63,7 +71,7 @@ export default new Vuex.Store({
 
     upsertUser(state, { user }) {
       const localUserIndex = state.users.findIndex(
-        _user => _user.username === user.username
+        (_user) => _user.username === user.username
       );
 
       if (localUserIndex !== -1) {
@@ -77,6 +85,16 @@ export default new Vuex.Store({
 
     upsertConversation(state, { conversation }) {
       //TODO
+    },
+
+    setSelected(state, user) {
+      console.log("on selectionne un user");
+      console.log(user);
+      if (user.userType === "user") {
+        user.userType = "selected user";
+      } else {
+        user.userType = "user";
+      }
     }
   },
   actions: {
@@ -87,7 +105,7 @@ export default new Vuex.Store({
       commit("setAuthenticating", true);
       Vue.prototype.$client
         .authenticate(username, password)
-        .then(user => {
+        .then((user) => {
           commit("setUser", user);
           localStorage.setItem("username", username);
           localStorage.setItem("password", password);
