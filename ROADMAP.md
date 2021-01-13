@@ -56,7 +56,7 @@
 
 ## Niveau 2
 
-- Afficher la liste des conversations (Sidebar) FAIT A MOITIE
+- Afficher la liste des conversations (Sidebar) FAIT
 
   - Afficher photo+nom de l'utilisateur/groupe, et texte+heure du dernier message
   - Trier la liste par heure de mise à jour décroissante
@@ -69,60 +69,60 @@
 
 ## Niveau 3
 
-- Afficher l'en-tête de la conversation (Conversation)
+- Afficher l'en-tête de la conversation (Conversation) FAIT
 
   - Afficher une photo ou l'icône groupe selon le cas
   - Afficher le titre de la conversation (par défaut, vaut le nom des participants)
 
-- Recevoir en temps réel les nouveaux messages
+- Recevoir en temps réel les nouveaux messages FAIT
 
   > \$client.on('messagePosted')
 
-- Affichage simple des messages d'une conversation (Conversation)
+- Affichage simple des messages d'une conversation (Conversation) FAIT
 
   - Différencier les messages de l'utilisateur de ceux des autres
     > classe "mine"
   - Afficher la photo de l'utilisateur auteur devant chaque message
 
-- Pouvoir envoyer un message (Conversation)
+- Pouvoir envoyer un message (Conversation) FAIT
   > \$client.postMessage
 
 ## Niveau 4
 
-- Pouvoir voir les participants d'une conversation (Group)
+- Pouvoir voir les participants d'une conversation (Group) FAIT
 
   > computed
 
-- Pouvoir voir les non-participants d'une conversation (Group)
+- Pouvoir voir les non-participants d'une conversation (Group) FAIT
 
   > computed
 
-- Pouvoir filtrer les utilisateurs dans la vue des participants (Group)
+- Pouvoir filtrer les utilisateurs dans la vue des participants (Group) FAIT
 
   > v-model, computed
 
-- Recevoir en temps réel l'ajout d'un participant à une conversation (Group)
+- Recevoir en temps réel l'ajout d'un participant à une conversation (Group) FAIT
 
   > \$client.on('participantAdded')
 
-- Pouvoir ajouter un participant d'une conversation ManyToMany (Group)
+- Pouvoir ajouter un participant d'une conversation ManyToMany (Group) FAIT
 
   > \$client.addParticipant
 
-- Recevoir en temps réel le retrait d'un participant à une conversation (Group)
+- Recevoir en temps réel le retrait d'un participant à une conversation (Group) FAIT
 
   > \$client.on('participantRemoved')
 
-- Pouvoir retirer un participant d'une conversation ManyToMany (si il y a plus de 3 participants) (Group)
+- Pouvoir retirer un participant d'une conversation ManyToMany (si il y a plus de 3 participants) (Group) FAIT
   > \$client.removeParticipant
 
 ## Niveau 5
 
-- Recevoir en temps réel les réactions aux messages (Conversation)
+- Recevoir en temps réel les réactions aux messages (Conversation) FAIT
 
   > \$client.on('messageReacted')
 
-- Afficher les réactions à un message (Conversation)
+- Afficher les réactions à un message (Conversation) FAIT
 
 - Afficher la réponse à un message (Conversation)
 

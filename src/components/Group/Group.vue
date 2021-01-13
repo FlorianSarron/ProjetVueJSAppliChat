@@ -21,9 +21,11 @@
         >{{user.username}}<br /><i class="nickname"></i></span
       ><i title="Modifier le surnom" class="circular quote left link icon"></i
       ><i
+        v-if="conversation.participants.length>3"
         title="Enlever de la conversation"
         class="circular times icon link"
         style=""
+        @click="removeUser(user)"
       ></i>
     </div>
    
@@ -35,7 +37,7 @@
     <div class="user" v-for="user in filteredUsersNotInConversation" :key="user.username">
       <img :src="user.picture_url" /><span
         >{{user.username}}</span
-      ><i title="Ajouter à la conversation" class="circular plus icon link"></i>
+      ><i v-if="conversation.type!=='one_to_one'" title="Ajouter à la conversation" class="circular plus icon link" @click="addUser(user)"></i>
     </div>
   </div>
 </template>
@@ -51,12 +53,24 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["filteredUsersInConversation","filteredUsersNotInConversation"]),
+    ...mapGetters(["conversation","filteredUsersInConversation","filteredUsersNotInConversation"]),
     ...mapState(["groupUsersFilter"])
   },
   methods: {
     ...mapMutations(["setGroupUsersFilter"]),
-    ...mapActions([])
+    ...mapActions(["addParticipant","removeParticipant"]),
+    addUser(user){
+      if(this.conversation.type!=="one_to_one"){
+        let inputs={conversation_id:this.conversation.id,username:user.username};
+        this.addParticipant(inputs);
+      }
+    },
+    removeUser(user){
+      if(this.conversation.participants.length>3){
+        let inputs={conversation_id:this.conversation.id,username:user.username};
+        this.removeParticipant(inputs);
+      }
+    }
   }
 };
 </script>

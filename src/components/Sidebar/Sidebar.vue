@@ -71,7 +71,7 @@
               hour:'2-digit',
               minute:'2-digit'})}}</span>
           </div>
-          <div class="text">{{conversation.subTitle}}</div>
+          <div class="text"> {{ getLastMessage(conversation.messages)}} </div>
         </div>
       </div> 
     
@@ -87,7 +87,8 @@ export default {
   name: "Sidebar",
   data() {
     return {
-      search: ""
+      search: "",
+      convTitle: ""
     };
   },
   methods: {
@@ -100,11 +101,19 @@ export default {
     },
     openConversation(id) {
       router.push({ name: "Conversation", params: { id } });
+    },
+    getLastMessage(list) {
+      for(let i = 0; i < list.length ; i++) {
+        if(i === list.length - 1) {
+          return list[i].content;
+        }
+      }
     }
   },
   computed: {
     ...mapGetters(["user", "conversations", "conversation"])
     
+
   }
 };
 </script>

@@ -75,7 +75,7 @@ export default new Vuex.Store({
           };
         })
         .sort(function (a, b) {
-          return new Date(b.updated_at - new Date(a.updated_at));
+          return new Date(b.updated_at) - new Date(a.updated_at);
         });
     },
 
@@ -221,8 +221,23 @@ export default new Vuex.Store({
       }
     },
 
-    upsertMessage(state, { conversation_id }, { message }) {
-      console.log("upsertConversation");
+    upsertMessage(state, { conversation_id, message }) {
+      let convFind = state.conversations.find(
+        (conv) => conv.id === conversation_id
+      );
+      console.log(convFind);
+
+      if (convFind !== undefined) {
+        const localMessageIndex = convFind.messages.findIndex(
+          (_message) => _message.id === message.id
+        );
+
+        if (localMessageIndex !== -1) {
+          Vue.set(convFind.messages, localMessageIndex, message);
+        } else {
+          convFind.messages.push(message);
+        }
+      }
     },
 
     setSearchUser(state, input) {
@@ -310,18 +325,70 @@ export default new Vuex.Store({
       return promiseMany;
     },
 
-    postMessage({ commit }, conversation_id, input) {
-      const promiseMessage = Vue.prototype.$client.postMessage(
-        conversation_id,
-        input
+    addParticipant({ commit }, inputs) {
+      const promiseAddParticipant = Vue.prototype.$client.addParticipant(
+        inputs.conversation_id,
+        inputs.username
       );
 
-      promiseMessage.then(({ conversation_id }, { message }) => {
-        commit("upsertMessage", { conversation_id }, { message });
-        console.log("mutation message envoyé");
+      promiseAddParticipant.then(({ conversation }) => {
+        commit("participantAdded", { conversation });
       });
 
-      return promiseMessage;
+      return promiseAddParticipant;
+    },
+
+    removeParticipant({ commit }, inputs) {
+      const promiseRemoveParticipant = Vue.prototype.$client.removeParticipant(
+        inputs.conversation_id,
+        inputs.username
+      );
+
+      promiseRemoveParticipant.then(({ conversation }) => {
+        commit("participantRemoved", { conversation });
+      });
+
+      return promiseRemoveParticipant;
+    },
+
+    postMessage({ commit }, inputs) {
+      if (inputs.idMessage) {
+        const promiseReplyMessage = Vue.prototype.$client.replyMessage(
+          inputs.idConv,
+          inputs.idMessage,
+          inputs.input
+        );
+        promiseReplyMessage.then(({ conversation_id, message }) => {
+          commit("upsertMessage", { conversation_id, message });
+        });
+
+        return promiseReplyMessage;
+      } else {
+        const promiseMessage = Vue.prototype.$client.postMessage(
+          inputs.idConv,
+          inputs.input
+        );
+        promiseMessage.then(({ conversation_id, message }) => {
+          commit("upsertMessage", { conversation_id, message });
+        });
+
+        return promiseMessage;
+      }
+    },
+    reactMessage({ commit }, inputs) {
+      console.log(inputs);
+      console.log("on crée la promesse de réaction");
+      const promiseReactMessage = Vue.prototype.$client.reactMessage(
+        inputs.idConv,
+        inputs.idMessage,
+        inputs.reaction
+      );
+
+      promiseReactMessage.then(({ conversation_id, message }) => {
+        commit("messageReacted", { conversation_id, message });
+      });
+
+      return promiseReactMessage;
     }
   }
 });
