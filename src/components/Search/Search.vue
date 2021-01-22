@@ -14,24 +14,23 @@
       </div>
     </div>
     <div class="conversations">
-      <div class="conversation" v-for="x in 10" :key="x">
+      <div class="conversation" v-for="conversation in conversations" :key="conversation.id">
         <div class="author">
-          <template v-if="x % 2">
-            <img src="https://source.unsplash.com/7YVZYZeITc8/100x100" />
-            <span>Bob</span>
-          </template>
-          <template v-else>
+          <template v-if="conversation.isManyToMany">
             <div class="avatar">M</div>
-            <span>Groupe : METINET</span>
+          </template>
+          <template v-if="!conversation.isManyToMany">
+            <img :src="conversation.avatarClass" />
+            <span>{{conversation.title}}</span>
           </template>
         </div>
-        <div class="messages" v-for="y in 3" :key="y">
+        <div class="messages" v-for="message in conversation.messages" :key="message.id">
           <div class="message">
-            <div class="time">14/07/2020 13:37</div>
+            <div class="time">{{ new Date(message.posted_at).toLocaleString("fr-FR",{
+                  hour:'2-digit',
+                  minute:'2-digit'}) }}</div>
             <div class="bubble">
-              Blah blah blah blah blah blah blah blah blah blah blah blah blah
-              blah blah blah blah blah blah blah blah blah blah blah blah blah
-              blah
+              {{message.content}}
             </div>
           </div>
         </div>
@@ -41,8 +40,25 @@
 </template>
 
 <script>
+
+import { mapGetters } from "vuex";
+
 export default {
-  name: "Search"
+  name: "Search",
+  data() {
+    return {
+      
+    };
+  },
+  methods: {
+    
+   
+  },
+  computed: {
+    ...mapGetters([ "conversations"])
+    
+
+  }
 };
 </script>
 

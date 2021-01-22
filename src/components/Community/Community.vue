@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="users">
-      <div class="user" v-bind:class="{ selected: isSelected(user)}"  v-for="user in filteredUsers" :key="user.username" @click="toggleSelected(user)">
+      <div class="user" v-bind:class="{ selected: isSelected(user),available:user.awake}"  v-for="user in filteredUsers" :key="user.username" @click="toggleSelected(user)">
         <img :src="user.picture_url" /><span
           class="">
           {{user.username}}</span

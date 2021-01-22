@@ -54,6 +54,7 @@
         v-for="conversation in conversations"
         :key="conversation.id"
         :title="conversation.title"
+        v-bind:class="{ available: isAwake(conversation)}"
         @click="openConversation(conversation.id)"
       >
         <a class="avatar" v-if="conversation.isManyToMany">
@@ -93,6 +94,23 @@ export default {
   },
   methods: {
     ...mapActions(["deauthenticate"]),
+    isAwake(conv){
+      let userTab = [];
+      this.users.forEach(function (user) {
+        conv.participants.forEach(function (username) {
+          if (user.username === username) {
+            userTab.push(user);
+          }
+        });
+      });
+      userTab.forEach(function (user) {      
+          if (user.awake) {
+           
+            return true;
+          } 
+      });
+      return false;
+    },
     openCommunity() {
       router.push({ name: "Community" });
     },
@@ -100,7 +118,7 @@ export default {
       router.push({ name: "Search" });
     },
     openConversation(id) {
-      router.push({ name: "Conversation", params: { id } });
+      router.push({ name: "Conversation", params: { id }});
     },
     getLastMessage(list) {
       for(let i = 0; i < list.length ; i++) {
@@ -111,7 +129,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["user", "conversations", "conversation"])
+    ...mapGetters(["user","users", "conversations", "conversation","filteredUsersByConv"])
     
 
   }

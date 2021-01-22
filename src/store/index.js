@@ -240,12 +240,35 @@ export default new Vuex.Store({
       }
     },
 
+    deleteMessage(state, { conversation_id, message_id }) {
+      let convFind = state.conversations.find(
+        (conv) => conv.id === conversation_id
+      );
+
+      if (convFind !== undefined) {
+        const messageIndex = convFind.messages.findIndex(
+          (_message) => _message.id === message_id
+        );
+        if (messageIndex !== -1) {
+          convFind.messages.slice(messageIndex, 1);
+        }
+      }
+    },
+
     setSearchUser(state, input) {
       state.searchUser = input;
     },
 
     setGroupUsersFilter(state, input) {
       state.groupUsersFilter = input;
+    },
+    setUsersAvailable(state, { usernames }) {
+      usernames.forEach(function (username) {
+        let userFinded = state.users.find((user) => user.username === username);
+        if (userFinded) {
+          state.usersAvailable.push(userFinded);
+        }
+      });
     }
   },
   actions: {
@@ -376,8 +399,6 @@ export default new Vuex.Store({
       }
     },
     reactMessage({ commit }, inputs) {
-      console.log(inputs);
-      console.log("on crée la promesse de réaction");
       const promiseReactMessage = Vue.prototype.$client.reactMessage(
         inputs.idConv,
         inputs.idMessage,
@@ -385,10 +406,35 @@ export default new Vuex.Store({
       );
 
       promiseReactMessage.then(({ conversation_id, message }) => {
-        commit("messageReacted", { conversation_id, message });
+        commit("upsertMessage", { conversation_id, message });
       });
 
       return promiseReactMessage;
+    },
+    editMessage({ commit }, inputs) {
+      const promiseEditMessage = Vue.prototype.$client.editMessage(
+        inputs.idConv,
+        inputs.idMessage,
+        inputs.content
+      );
+
+      promiseEditMessage.then(({ conversation_id, message }) => {
+        commit("upsertMessage", { conversation_id, message });
+      });
+
+      return promiseEditMessage;
+    },
+    deleteMessage({ commit }, inputs) {
+      const promiseDeleteMessage = Vue.prototype.$client.deleteMessage(
+        inputs.idConv,
+        inputs.idMessage
+      );
+
+      promiseDeleteMessage.then(({ conversation_id, message_id }) => {
+        commit("deleteMessage", { conversation_id, message_id });
+      });
+
+      return promiseDeleteMessage;
     }
   }
 });

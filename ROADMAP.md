@@ -168,16 +168,16 @@
 
 ## Niveau 7
 
-- Recevoir en temps réel la liste des utilisateurs en ligne
+- Recevoir en temps réel la liste des utilisateurs en ligne FAIT
 
   > \$client.on('usersAvailable')
 
-- Affichage avancé la liste des utilisateurs (Community)
+- Affichage avancé la liste des utilisateurs (Community) FAIT
 
-  - Afficher s'ils sont en ligne
+  - Afficher s'ils sont en ligne FAIT
     > classe "available"
 
-- Affichage avancé l'en-tête de la conversation (Conversation)
+- Affichage avancé l'en-tête de la conversation (Conversation) FAIT
 
   - Afficher si l'utilisateur ou un utilisateur du groupe est en ligne
 
@@ -185,7 +185,7 @@
 
 - Affichage avancé de la liste des conversations (Sidebar)
 
-  - Afficher si l'autre utilisateur ou un participant du groupe est en ligne
+  - Afficher si l'autre utilisateur ou un participant du groupe est en ligne FAIT
     > getters
   - Afficher si la conversation contient un nouveau message qui n'a pas été lu
     > getters

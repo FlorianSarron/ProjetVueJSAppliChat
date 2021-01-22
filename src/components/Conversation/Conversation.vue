@@ -8,7 +8,7 @@
 
       <div class="title">
         <div class="ui compact">
-          <i class="icon circle"></i>
+          <i class="icon circle" v-if="isAwake()"></i>
           <span>{{ conversation.title }}</span>
           <div class="ui simple dropdown item">
             <i class="vertical ellipsis icon"></i>
@@ -42,6 +42,7 @@
 
 
     <!-- <div> {{ conversation }} </div> -->
+    <!-- <div> {{ users }} </div> -->
 
 
     <div class="conversation-container">
@@ -51,38 +52,31 @@
             <div v-for="message in conversation.messages" :key="message.id">
               <div v-if="message.from == user.username" >
                 <div  class="time"> {{ new Date(message.posted_at).toLocaleString("fr-FR",{
-              hour:'2-digit',
-              minute:'2-digit'}) }}</div>
-                <div v-if="message.reply_to !== null" class="message mine">
-              <div class="bubble middle">
-                <p class="reply_content">{{ message.reply_to.content }}</p>
-                {{ message.content }}
-              </div>
-              <div class="reacts"></div>
-              <div class="controls">
-                <i title="Répondre" class="circular reply icon"></i
-                ><span class="react"
-                  ><i title="Aimer" class="circular heart outline icon"></i
-                  ><i
-                    title="Pouce en l'air"
-                    class="circular thumbs up outline icon"
-                  ></i
-                  ><i title="Content" class="circular smile outline icon"></i
-                  ><i
-                    title="Pas content"
-                    class="circular frown outline icon"
-                  ></i
-                ></span>
-              </div>
+                  hour:'2-digit',
+                  minute:'2-digit'}) }}
                 </div>
-                <div v-if="message.reply_to == null" class="message mine">
-                  <div class="bubble top bottom"> {{ message.content }}</div>
+              <div v-if="message.reply_to !== null" class="message mine">
+                <div class="bubble middle">
+                  <p class="reply_content">{{ message.reply_to.content }}</p>
+                  {{ message.content }}
+                </div>
+                <div class="reacts" v-for="reaction in message.reactions" :key="reaction">
+                  <i :title="getReactTitle(reaction)" :class="getReactClass(reaction)"></i>
+                </div>
+                <div class="controls">
+                  <i title="Supprimer" class="circular trash icon" @click="suppMessage(message)"></i>
+                  <i title="Editer" class="circular edit icon" @click="editClick(message)"></i>
+                  <i title="Répondre" class="circular reply icon"></i>
+                </div>
+              </div>
+              <div v-if="message.reply_to == null" class="message mine">
+                <div class="bubble top bottom"> {{ message.content }}</div>
                   <div class="reacts" v-for="reaction in message.reactions" :key="reaction">
                       <i :title="getReactTitle(reaction)" :class="getReactClass(reaction)"></i>
                   </div>
                   <div class="controls">
-                    <i title="Supprimer" class="circular trash icon"></i>
-                    <i title="Editer" class="circular edit icon"></i>
+                    <i title="Supprimer" class="circular trash icon" @click="suppMessage(message)"></i>
+                    <i title="Editer" class="circular edit icon" @click="editClick(message)"></i>
                     <i title="Répondre" class="circular reply icon"></i>
                   </div>
                 </div>
@@ -96,21 +90,33 @@
                 <p class="reply_content">{{ message.reply_to.content }}</p>
                 {{ message.content }}
               </div>
-              <div class="reacts"></div>
+              <div class="reacts" v-for="reaction in message.reactions" :key="reaction">
+                <i :title="getReactTitle(reaction)" :class="getReactClass(reaction)"></i>
+              </div>
               <div class="controls">
-                <i title="Répondre" class="circular reply icon"></i
+                <i title="Répondre" class="circular reply icon" @click="replyMessage(message)"></i
                 ><span class="react"
-                  ><i title="Aimer" class="circular heart outline icon"></i
-                  ><i
-                    title="Pouce en l'air"
-                    class="circular thumbs up outline icon"
-                  ></i
-                  ><i title="Content" class="circular smile outline icon"></i
-                  ><i
-                    title="Pas content"
-                    class="circular frown outline icon"
-                  ></i
-                ></span>
+                      ><i 
+                        title="Aimer"
+                        class="circular heart outline icon"
+                        @click="reactToMessage({reaction:'HEART',message:message})"
+                      ></i
+                      ><i
+                        title="Pouce en l'air"
+                        class="circular thumbs up outline icon"
+                        @click="reactToMessage({reaction:'THUMB',message:message})"
+                      ></i
+                      ><i 
+                        title="Content"
+                        class="circular smile outline icon"
+                         @click="reactToMessage({reaction:'HAPPY',message:message})"
+                      ></i
+                      ><i
+                        title="Pas content"
+                        class="circular frown outline icon"
+                         @click="reactToMessage({reaction:'SAD',message:message})"
+                      ></i
+                    ></span>
               </div>
                 </div>
                 <div v-if="message.reply_to == null" class="message">
@@ -152,21 +158,16 @@
               </div>
               
             </div>
-            <div class="view">
-                <img
-                  title="Vu par Bob à 01:35:50"
-                  src="https://source.unsplash.com/7omHUGhhmZ0/100x100"
-                />
-                
-            </div>
+                <div class="view">
+                  <img v-for="participant in filteredUsersInConversation" :key="participant.id"
+                    :title="textSeen(participant)"
+                    :src=participant.picture_url
+                  />
+                </div>
           </div>
         </div>
 
-        <div class="typing">
-          <div class="wrapper">
-            Alice est en train d'écrire...
-          </div>
-        </div>
+        
         <div class="conversation-footer">
           <div class="wrapper">
             <p v-if="isAnswer">
@@ -175,6 +176,10 @@
               <span>
                 {{ answerToMessage }}
               </span>
+            </p>
+            <p v-if="isEditing">
+              <i @click="stopEditing()" title="Abandonner" class="circular times small icon link"></i>
+              Edition :
             </p>
 
             <div class="ui fluid search">
@@ -214,22 +219,33 @@ export default {
       isAnswer: false,
       answerTo: "",
       answerToMessage: "",
-      answerToId: 0
+      answerToId: 0,
+      isEditing:false,
+      editMessageId:0,
     };
   },
   mounted() {
-    console.log(this.conversation);
     this.scrollBottom();
   },
   updated() {
     this.scrollBottom();
   },
   computed: {
-    ...mapGetters(["conversation","user","users"])
+    ...mapGetters(["conversation","user","users","filteredUsersInConversation","isConversationAwaken"])
   },
   methods: {
-    ...mapActions(["postMessage","reactMessage"]),
+    ...mapActions(["postMessage","reactMessage","deleteMessage","editMessage"]),
     ...mapMutations([]),
+
+    isAwake(){
+      this.filteredUsersInConversation.forEach(function (user) {
+          if(user.awake){
+            return true;
+          }
+      });
+      return false;
+
+    },
 
     getImageFromMessage(usernameFind){
       console.log(usernameFind);
@@ -239,8 +255,23 @@ export default {
       return userFind.picture_url ;
     },
 
+    textSeen(participant) {
+       let val = "Vu par " + participant.username + " à 12:00";
+       return val;
+    },
+
+    suppMessage(message) {
+      let inputs = {
+        idConv: this.conversation.id,
+        idMessage: message.id
+      };
+
+      this.deleteMessage(inputs);
+    },
+
     replyMessage(mess) {
       console.log("réponse au message : " + mess.content);
+      this.stopEditing();
       this.isAnswer = true;
       this.answerTo = mess.from;
       this.answerToId = mess.id;
@@ -251,29 +282,40 @@ export default {
       this.isAnswer = false;
     },
 
-    newMessage() {
-      let inputs;
-      console.log(this.isAnswer);
-      if(this.isAnswer === false) {
-        inputs = {
-        idConv: this.conversation.id,
-        input: this.inputMessage
-        }
-      }
-      if(this.isAnswer === true) {
-        inputs = {
-          idConv: this.conversation.id,
-          idMessage: this.answerToId,
-          input: this.inputMessage,
-        }
-      }
-      
-      console.log(inputs);
-      let promise = this.postMessage(inputs);
+    stopEditing() {
+      this.inputMessage="";
+      this.isEditing = false;
+    },
 
-      promise.finally(() => {
-        this.inputMessage = "" ;
-       });
+    newMessage() {
+      if(this.isEditing){
+        this.editionMessage();
+      }
+      else{
+        let inputs;
+        console.log(this.isAnswer);
+        if(this.isAnswer === false) {
+          inputs = {
+          idConv: this.conversation.id,
+          input: this.inputMessage
+          }
+        }
+        if(this.isAnswer === true) {
+          inputs = {
+            idConv: this.conversation.id,
+            idMessage: this.answerToId,
+            input: this.inputMessage,
+        }
+        }
+      
+        console.log(inputs);
+        let promise = this.postMessage(inputs);
+
+        promise.finally(() => {
+          this.inputMessage = "";
+          this.isAnswer = false ;
+        });
+      }
 
     },
     scrollBottom() {
@@ -296,9 +338,30 @@ export default {
         this.reactMessage(donnees);
       }
     },
+    editClick(message){
+      this.stopAnswer();
+      this.isEditing=true;
+      this.editMessageId=message.id;
+      this.inputMessage=message.content;
+
+    },
+    editionMessage(){
+      let inputs;
+      inputs = {
+        idConv: this.conversation.id,
+        idMessage: this.editMessageId,
+        content:this.inputMessage
+      }
+      let promise = this.editMessage(inputs);
+
+        promise.finally(() => {
+          this.inputMessage = "";
+          this.isEditing=false;
+        });
+    },
     getReactTitle(reaction){
       switch (reaction) {
-        case "LIKE":
+        case "HEART":
           return "Aimer";
        
         case "THUMB":
@@ -316,7 +379,7 @@ export default {
     },
     getReactClass(reaction){
       switch (reaction) {
-        case "LIKE":
+        case "HEART":
           return "circular heart outline icon";
        
         case "THUMB":
